@@ -1,8 +1,8 @@
 # Proiect MPS
 
-Roluri:
-Gamanusi Cosmin - Project Manager
-Voicu Ana-Nicoleta - Team Leader
-Cristea Theodor-Stefan - Software Developer
-Stroe Tudor Cristian - Software Developer
-Stoian Dragos Andrei - Tester
+Roluri: <br/>
+Gamanusi Cosmin - Project Manager <br/>
+Voicu Ana-Nicoleta - Team Leader <br/>
+Cristea Theodor-Stefan - Software Developer <br/>
+Stroe Tudor Cristian - Software Developer <br/>
+Stoian Dragos Andrei - Tester <br/>
