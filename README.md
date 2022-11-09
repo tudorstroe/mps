@@ -7,6 +7,9 @@ Cristea Theodor-Stefan - Software Developer <br/>
 Stroe Tudor Cristian - Software Developer <br/>
 Stoian Dragos Andrei - Tester <br/>
 
+# Descrierea proiectului
+Dorim sa putem digitaliza documente eficient prin procesul de prepocesare, numit si binarizare. Exista doua tipuri de binarizare, locala si globala.
+
 ### Milestones: <br/>
 Milestone 1: <br/>
 -Setare repo pe un sistem de versionare (GitHub, GitLab) <br/>
