@@ -1,6 +1,6 @@
 # Proiect MPS
 
-Roluri: <br/>
+# Roluri: <br/>
 Gamanusi Cosmin 342C5 - Project Manager <br/>
 Voicu Ana-Nicoleta 342C5 - Team Leader <br/>
 Cristea Theodor-Stefan 342C5 - Software Developer <br/>
