@@ -37,4 +37,6 @@ Milestone 3: <br/>
     -C++
 ### Framework-uri/Biblioteci folosite:
     -Cucumber  
+### Imaginea arhitectorala
+![index](https://user-images.githubusercontent.com/29024852/200840523-0a1ac327-b140-4da0-9be9-8cb50709626f.jpeg)
 
