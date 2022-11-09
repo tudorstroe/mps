@@ -8,7 +8,7 @@ Stroe Tudor Cristian 341C3 - Software Developer <br/>
 Stoian Dragos Andrei 342C5 - Tester <br/>
 
 ### Descrierea proiectului
-Dorim sa putem digitaliza documente eficient prin procesul de prepocesare, numit si binarizare. Exista doua tipuri de binarizare, locala si globala. Scopul proiectului este de a combina algoritmii locali si globali, numiti si praguri de binarizare pentru un rezultat mult mai bun decat acestia individuali. Se primeste la intrare un set de fisiere CSV, pe care trebuie aplicat un asemenea prag de binarizare, pentru transformarea pixelilor unei imagini in valori in alb (255) si negru (0) in functie de prag. 
+    Dorim sa putem digitaliza documente eficient prin procesul de prepocesare, numit si binarizare. Exista doua tipuri de binarizare, locala si globala. Scopul proiectului este de a combina algoritmii locali si globali, numiti si praguri de binarizare pentru un rezultat mult mai bun decat acestia individuali. Se primeste la intrare un set de fisiere CSV, pe care trebuie aplicat un asemenea prag de binarizare, pentru transformarea pixelilor unei imagini in valori in alb (255) si negru (0) in functie de prag. 
 Link cerinta: https://ocw.cs.pub.ro/courses/mps/proiect
 
 ### Milestones: <br/>
