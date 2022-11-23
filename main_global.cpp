@@ -1,11 +1,12 @@
 #include <bits/stdc++.h>
+#include <experimental/filesystem>
 
 using namespace std;
-using recursive_directory_iterator = std::filesystem::recursive_directory_iterator;
+using recursive_directory_iterator = std::experimental::filesystem::recursive_directory_iterator;
 
 const int no_thresholds = 15;
 const int no_f_measure = 256;
-const int no_levels = 5;
+const int no_levels = 4;
 const int trees_to_generate = 1000;
 const int trees_in_set = 5;
 const double train = 0.7;
@@ -41,10 +42,10 @@ private:
             thresholds[i] = original_thresholds[i];
         }
 
-        double current_score = 0;
         double *threshold_copy;
 
         threshold_copy = new double[no_thresholds + 1];
+        double end_threshold = 1;
 
         for (int i = 0; i < no_levels; ++i) {
             for (int j = 1; j <= no_thresholds; ++j) {
@@ -66,11 +67,14 @@ private:
             for (int j = 1; j <= no_thresholds; ++j) {
                 thresholds[j] = threshold_copy[j];
                 if (thresholds[j] != 0) {
-                    current_score = max(current_score, get_score(thresholds[j], f_measure));
+                    end_threshold = min(end_threshold, thresholds[j]);
                 }
             }
         }
-        return current_score;
+        if (end_threshold > 1) {
+            end_threshold = 1;
+        }
+        return get_score(end_threshold, f_measure);
     }
 
     double get_overall_score() {
@@ -123,10 +127,72 @@ public:
         this->end_set = end;
         this->score = this->get_overall_score();
     }
+
+    void print_tree() {
+        cout << "double get_global(const double* original_thresholds) {\n"
+                "        int no_levels = 4, no_thresholds = 15;\n"
+                "        vector<int>** levels;\n"
+                "        levels = new vector<int>*[no_levels];\n"
+                "\n"
+                "for (int i = 0; i < no_levels; ++i) {\n"
+                "   levels[i] = new vector<int>[no_thresholds + 1];\n"
+                "   for (int j = 0; j <= no_thresholds; ++j) {\n"
+                "       for (int k = 0; k < no_thresholds; ++k) {\n"
+                "           levels[i][j].push_back(0);\n"
+                "       }\n"
+                "   }\n"
+                "}\n";
+        for (int i = 0; i < no_levels; ++i) {
+            for (int j = 1; j <= no_thresholds; ++j) {
+                for (int k = 0; k < no_thresholds; ++k) {
+                    cout << "levels[" << i << "][" << j << "][" << k << "] = " << levels[i][j][k] << ";\n";
+                }
+            }
+        }
+        cout << "        auto *thresholds = new double[no_thresholds + 1];\n"
+                "        for (int i = 0; i < no_thresholds; ++i) {\n"
+                "            thresholds[i + 1] = original_thresholds[i];\n"
+                "        }\n"
+                "\n"
+                "        double *threshold_copy;\n"
+                "\n"
+                "        threshold_copy = new double[no_thresholds + 1];\n"
+                "        double end_threshold = 1;\n"
+                "\n"
+                "        for (int i = 0; i < no_levels; ++i) {\n"
+                "            for (int j = 1; j <= no_thresholds; ++j) {\n"
+                "                int count = 0;\n"
+                "                for (int k = 0; k < no_thresholds; ++k) {\n"
+                "                    int index = levels[i][j][k];\n"
+                "                    if (index != 0 && thresholds[index] != 0) {\n"
+                "                        ++count;\n"
+                "                        threshold_copy[j] += thresholds[index];\n"
+                "                    }\n"
+                "                }\n"
+                "                if (count == 0) {\n"
+                "                    threshold_copy[j] = 0;\n"
+                "                } else {\n"
+                "                    threshold_copy[j] /= 1.0 * count;\n"
+                "                }\n"
+                "            }\n"
+                "\n"
+                "            for (int j = 1; j <= no_thresholds; ++j) {\n"
+                "                thresholds[j] = threshold_copy[j];\n"
+                "                if (thresholds[j] != 0) {\n"
+                "                    end_threshold = min(end_threshold, thresholds[j]);\n"
+                "                }\n"
+                "            }\n"
+                "        }\n"
+                "        if (end_threshold > 1) {\n"
+                "            end_threshold = 1;\n"
+                "        }\n"
+                "        return end_threshold;\n"
+                "    }";
+    }
 };
 
 recursive_directory_iterator get_directory() {
-    return recursive_directory_iterator(std::filesystem::current_path().string() + "\\..\\mps-global");
+    return recursive_directory_iterator(std::experimental::filesystem::current_path().string() + "/mps-global/MPS-Global");
 }
 
 void read_data_from_file(string& filePath, double* thresholds, double* f_measure) {
@@ -220,7 +286,10 @@ int main() {
     }
 
     result_tree->change_set(0, number_of_files - 1);
-    cout << "Best tree score for local: " << result_tree->score << '\n';
+
+    result_tree->print_tree();
+
+    cout << "\nBest tree score for global: " << result_tree->score << '\n';
 
     return 0;
 }
