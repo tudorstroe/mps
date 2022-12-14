@@ -7,7 +7,7 @@ using recursive_directory_iterator = std::experimental::filesystem::recursive_di
 const int no_thresholds = 10;
 const int no_f_measure = 256;
 const int no_levels = 4;
-const int trees_to_generate = 1000;
+const int trees_to_generate = 10;
 const int trees_in_set = 5;
 const double train = 0.7;
 const double validation = 0.25;
@@ -29,7 +29,7 @@ private:
     int start_set;
     int end_set;
 
-    double get_pixel_threshold(const double* original_thresholds) {
+    double get_pixel_threshold(double* &original_thresholds) {
         auto *thresholds = new double[no_thresholds + 1];
         for (int i = 0; i <= no_thresholds; ++i) {
             thresholds[i] = original_thresholds[i];
@@ -67,12 +67,13 @@ private:
         if (end_threshold > 1) {
             end_threshold = 1;
         }
-        return end_threshold;
+        delete[] thresholds;
+        delete[] threshold_copy;
+        return min(end_threshold * 5.53 / 5, 1.0);
     }
 
-    double get_file_score(vector<double*> thresholds, vector<int> pixel_class) {
+    double get_file_score(vector<double*> &thresholds, vector<int> &pixel_class) {
         int TP = 0, FP = 0, TN = 0, FN = 0;
-
         for (int i = 0; i < (int)pixel_class.size(); ++i) {
             double pixel_threshold = get_pixel_threshold(thresholds[i]);
             double pixel_deduced_class;
@@ -83,13 +84,13 @@ private:
                 pixel_deduced_class = 0;
             }
 
-            if (pixel_deduced_class == 0 && pixel_class[i] == 0) {
+            if (pixel_deduced_class == 1 && pixel_class[i] == 1) {
                 ++TP;
-            } else if (pixel_deduced_class == 0 && pixel_class[i] == 1) {
-                ++FP;
-            } else if (pixel_deduced_class == 1 && pixel_class[i] == 1) {
-                ++TN;
             } else if (pixel_deduced_class == 1 && pixel_class[i] == 0) {
+                ++FP;
+            } else if (pixel_deduced_class == 0 && pixel_class[i] == 0) {
+                ++TN;
+            } else if (pixel_deduced_class == 0 && pixel_class[i] == 1) {
                 ++FN;
             }
         }
@@ -108,7 +109,7 @@ private:
 public:
     double score;
 
-    explicit Tree(vector<double*>* thresholds, vector<int>* pixel_class, int no_files, int start_set, int end_set) {
+    explicit Tree(vector<double*>* &thresholds, vector<int>* &pixel_class, int no_files, int start_set, int end_set) {
         this->thresholds_ref = thresholds;
         this->pixel_class_ref = pixel_class;
         this->no_files = no_files;
@@ -148,8 +149,8 @@ public:
     }
 
     void print_tree() {
-        cout << "double get_global(const double* original_thresholds) {\n"
-                "        int no_levels = 4, no_thresholds = 15;\n"
+        cout << "double get_pixel_threshold(double* &original_thresholds) {\n"
+                "        int no_levels = 4, no_thresholds = 10;\n"
                 "        vector<int>** levels;\n"
                 "        levels = new vector<int>*[no_levels];\n"
                 "\n"
@@ -169,8 +170,8 @@ public:
             }
         }
         cout << "        auto *thresholds = new double[no_thresholds + 1];\n"
-                "        for (int i = 0; i < no_thresholds; ++i) {\n"
-                "            thresholds[i + 1] = original_thresholds[i];\n"
+                "        for (int i = 0; i <= no_thresholds; ++i) {\n"
+                "            thresholds[i] = original_thresholds[i];\n"
                 "        }\n"
                 "\n"
                 "        double *threshold_copy;\n"
@@ -205,13 +206,15 @@ public:
                 "        if (end_threshold > 1) {\n"
                 "            end_threshold = 1;\n"
                 "        }\n"
-                "        return end_threshold;\n"
-                "    }";
+                "        delete[] thresholds;\n"
+                "        delete[] threshold_copy;\n"
+                "        return min(end_threshold * 5.53 / 5, 1.0);\n"
+                "    }\n";
     }
 };
 
 recursive_directory_iterator get_directory() {
-    return recursive_directory_iterator(std::experimental::filesystem::current_path().string() + "/mps-global/MPS-Global");
+    return recursive_directory_iterator(std::experimental::filesystem::current_path().string() + "/mps-local/MPS-Local");
 }
 
 void read_data_from_file(string& filePath, vector<double*>& thresholds, vector<int>& pixel_class) {
@@ -226,6 +229,7 @@ void read_data_from_file(string& filePath, vector<double*>& thresholds, vector<i
         f >> t[0] >> dump_char;
 
         f >> aux >> dump_char;
+        pixel_class.push_back(aux);
         for (int i = 1; i <= no_thresholds; i++) {
             f >> t[i] >> dump_char;
         }
