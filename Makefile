@@ -17,4 +17,4 @@ run_check_local:
 	./check_local
 
 clean:
-	rm -f main_global check_global
+	rm -f main_global check_global main_local check_local
