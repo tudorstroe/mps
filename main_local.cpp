@@ -84,11 +84,11 @@ private:
                 pixel_deduced_class = 0;
             }
 
-            if (pixel_deduced_class == 1 && pixel_class[i] == 1) {
+            if (pixel_deduced_class == 0 && pixel_class[i] == 0) {
                 ++TP;
             } else if (pixel_deduced_class == 1 && pixel_class[i] == 0) {
                 ++FP;
-            } else if (pixel_deduced_class == 0 && pixel_class[i] == 0) {
+            } else if (pixel_deduced_class == 1 && pixel_class[i] == 1) {
                 ++TN;
             } else if (pixel_deduced_class == 0 && pixel_class[i] == 1) {
                 ++FN;
@@ -208,6 +208,11 @@ public:
                 "        }\n"
                 "        delete[] thresholds;\n"
                 "        delete[] threshold_copy;\n"
+                "        for (int i = 0; i < no_levels; ++i) {\n"
+                "           delete[] levels[i];\n"
+                "        }\n"
+                "        delete[] levels;\n"
+                "\n"
                 "        return min(end_threshold * 5.53 / 5, 1.0);\n"
                 "    }\n";
     }
